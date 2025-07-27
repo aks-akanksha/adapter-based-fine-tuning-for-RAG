@@ -1,0 +1,88 @@
+# config.yaml
+# Defines a list of experiments to be run sequentially.
+
+# Common settings that apply to all experiments unless overridden
+global_settings:
+  data:
+    dataset_name: "squad"
+    split: "train[:500]" # Use a small slice for quick testing
+  rag:
+    retriever_model: "all-MiniLM-L6-v2"
+    top_k: 3
+  training:
+    output_dir: "./results"
+    num_train_epochs: 1
+    per_device_train_batch_size: 2 # Adjust based on your GPU memory
+    learning_rate: 0.0003
+
+# List of experiments to run
+experiments:
+  - experiment_name: "GPT2_LoRA"
+    model:
+      base_model: "gpt2"
+      adapter_type: "lora"
+      lora_config:
+        r: 8
+        lora_alpha: 16
+        target_modules: ["c_attn"]
+
+  - experiment_name: "GPT2_IA3"
+    model:
+      base_model: "gpt2"
+      adapter_type: "ia3"
+      ia3_config:
+        target_modules: ["c_attn", "c_proj"]
+        feedforward_modules: ["c_fc"]
+  
+  - experiment_name: "GPT2_AdaLoRA"
+    model:
+      base_model: "gpt2"
+      adapter_type: "adalora"
+      adalora_config:
+        r: 8
+        lora_alpha: 16
+        target_modules: ["c_attn"]
+
+  - experiment_name: "DistilGPT2_LoRA"
+    model:
+      base_model: "distilgpt2"
+      adapter_type: "lora"
+      lora_config:
+        r: 8
+        lora_alpha: 16
+        target_modules: ["c_attn"]
+
+  - experiment_name: "GPT-Neo-125M_LoRA"
+    model:
+      base_model: "EleutherAI/gpt-neo-125M"
+      adapter_type: "lora"
+      lora_config:
+        r: 8
+        lora_alpha: 16
+        target_modules: ["q_proj", "v_proj"]
+
+  - experiment_name: "GPT-Neo-125M_AdaLoRA"
+    model:
+      base_model: "EleutherAI/gpt-neo-125M"
+      adapter_type: "adalora"
+      adalora_config:
+        r: 8
+        lora_alpha: 16
+        target_modules: ["q_proj", "v_proj"]
+
+  # Full Fine-Tuning (FT) baselines. Warning: These are very slow and memory-intensive.
+  # You may want to run these separately with a smaller dataset split.
+  - experiment_name: "DistilGPT2_Full_FT"
+    model:
+      base_model: "distilgpt2"
+      adapter_type: "none"
+
+  - experiment_name: "GPT2_Full_FT"
+    model:
+      base_model: "gpt2"
+      adapter_type: "none"
+
+  - experiment_name: "GPT-Neo-125M_Full_FT"
+    model:
+      base_model: "EleutherAI/gpt-neo-125M"
+      adapter_type: "none"

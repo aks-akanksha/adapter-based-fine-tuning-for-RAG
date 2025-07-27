@@ -1,0 +1,18 @@
+# Python Virtual Environment
+llm_finetune/
+venv/
+*.env
+
+# Python cache files
+__pycache__/
+*.pyc
+
+# Generated results and plots
+results/
+*.csv
+*.png
+
+# IDE and OS files
+.vscode/
+.idea/
+.DS_Store
