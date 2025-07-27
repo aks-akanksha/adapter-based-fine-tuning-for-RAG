@@ -1,6 +1,9 @@
 # Modular PEFT Framework for Retrieval-Augmented Generation
 
-![Analysis Dashboard](advanced_analysis_dashboard.png)
+![Performance vs Efficiency](plot_1_performance_vs_efficiency.png)
+![Performance Comparison](plot_2_performance_comparison.png)
+![Computation Cost](plot_3_cost_comparison.png)
+![Model-wise Comparison](plot_4_model_deep_dive.png)
 
 ## 1. Abstract
 
@@ -19,8 +22,6 @@ This project provides a modular and extensible Python framework for fine-tuning 
 ## 2. How It Works
 
 The framework follows a systematic process for each experiment defined in the configuration:
-
-![Framework Diagram](https://i.imgur.com/sD3t2c7.png)
 
 1.  **Configuration:** The `main.py` script reads the list of experiments and global settings from `config.yaml`.
 2.  **Data Loading & RAG Setup:** The specified dataset is loaded, and a knowledge base is built by embedding context passages into a FAISS vector index. This step is done only once for all experiments.
