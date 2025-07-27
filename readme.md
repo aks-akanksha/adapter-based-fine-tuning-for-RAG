@@ -76,7 +76,7 @@ The framework's architecture is designed for modularity and automation.
 ### 4.2. Installation
 1.  Clone the repository:
     ```bash
-    git clone ![https://github.com/aks-akanksha/adapter-based-fine-tuning-for-RAG.git](https://github.com/aks-akanksha/adapter-based-fine-tuning-for-RAG.git)
+    git clone https://github.com/aks-akanksha/adapter-based-fine-tuning-for-RAG.git
     cd adapter-based-fine-tuning-for-RAG
     ```
 2.  Create and activate a virtual environment (recommended):
