@@ -10,7 +10,7 @@ __pycache__/
 # Generated results and plots
 results/
 *.csv
-*.png
+# *.png
 
 # IDE and OS files
 .vscode/
