@@ -301,10 +301,10 @@ python analyze_results.py --results_file my_results.csv
 ```
 
 This generates:
-- `plot_1_performance_vs_efficiency.png` - Main trade-off plot
-- `plot_2_performance_comparison.png` - All metrics comparison
-- `plot_3_cost_comparison.png` - Time and parameter costs
-- `plot_4_model_deep_dive.png` - Model-wise detailed analysis
+- `plot_1_performance_vs_efficiency.jpg` - Main trade-off plot
+- `plot_2_performance_comparison.jpg` - All metrics comparison
+- `plot_3_cost_comparison.jpg` - Time and parameter costs
+- `plot_4_model_deep_dive.jpg` - Model-wise detailed analysis
 
 #### View TensorBoard Logs
 
