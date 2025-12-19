@@ -16,3 +16,13 @@ matplotlib
 seaborn
 tabulate
 scikit-learn
+tensorboard
+psutil
+gpustat
+bert-score
+meteor-score
+streamlit
+rank-bm25
+optuna
+plotly
+pandas

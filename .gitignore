@@ -1,6 +1,8 @@
 # Python Virtual Environment
 llm_finetune/
 venv/
+env/
+ENV/
 *.env
 
 # Python cache files
@@ -11,6 +13,16 @@ __pycache__/
 results/
 *.csv
 # *.png
+
+# Training logs
+*.log
+training_*.log
+full_training.log
+training_output.log
+training_progress.log
+training_complete.log
+training_final.log
+training_log.txt
 
 # IDE and OS files
 .vscode/

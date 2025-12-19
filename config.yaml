@@ -9,11 +9,28 @@ global_settings:
   rag:
     retriever_model: "all-MiniLM-L6-v2"
     top_k: 3
+    retrieval_strategy: "dense"  # Options: dense, sparse, hybrid, reranked
+    enable_reranking: false  # Set to true to use cross-encoder reranking (slower but better)
+    enable_sparse: false  # Set to true to enable BM25 sparse retrieval
+    multi_query: false  # Set to true for multi-query retrieval
   training:
     output_dir: "./results"
     num_train_epochs: 1
-    per_device_train_batch_size: 2 # Adjust based on your GPU memory
+    per_device_train_batch_size: 4 # Optimized for 8GB VRAM with PEFT
+    gradient_accumulation_steps: 2 # Effective batch size = 4 * 2 = 8
     learning_rate: 0.0003
+    warmup_ratio: 0.1 # 10% of steps for warmup
+    logging_steps: 10
+    save_steps: 500
+    save_total_limit: 2 # Keep only last 2 checkpoints to save space
+    lr_scheduler_type: "linear" # Options: linear, cosine, cosine_with_restarts
+    optim: "adamw_torch"
+    fp16: true # Use mixed precision for PEFT methods
+    bf16: false # Set to true for newer GPUs (RTX 30/40 series with Ampere+)
+    dataloader_num_workers: 0 # Set to 0 to avoid multiprocessing issues
+    seed: 42
+    use_tensorboard: true # Enable TensorBoard logging
+    enable_checkpointing: true # Enable gradient checkpointing for memory efficiency
 
 # List of experiments to run
 experiments:
@@ -31,7 +48,7 @@ experiments:
       base_model: "gpt2"
       adapter_type: "ia3"
       ia3_config:
-        target_modules: ["c_attn", "c_proj"]
+        target_modules: ["c_attn", "c_proj", "c_fc"]
         feedforward_modules: ["c_fc"]
   
   - experiment_name: "GPT2_AdaLoRA"

@@ -24,8 +24,8 @@ def load_model_with_adapters(base_model_name, adapter_type, adapter_config, tota
         )
         model_kwargs["quantization_config"] = quantization_config
     else:
-        print("Loading model in half-precision (fp16) for Full Fine-Tuning.")
-        model_kwargs["torch_dtype"] = torch.float16
+        print("Loading model in full precision (fp32) for Full Fine-Tuning to avoid gradient scaling issues.")
+        model_kwargs["torch_dtype"] = torch.float32
 
 
     model = AutoModelForCausalLM.from_pretrained(base_model_name, **model_kwargs)
@@ -53,6 +53,12 @@ def load_model_with_adapters(base_model_name, adapter_type, adapter_config, tota
             
         model = get_peft_model(model, peft_config)
         
+        # Prepare model for training with quantization
+        model.print_trainable_parameters()
+    
+    # Ensure model is in training mode
+    model.train()
+    
     # Get parameter info
     trainable_params = sum(p.numel() for p in model.parameters() if p.requires_grad)
     total_params = sum(p.numel() for p in model.parameters())
@@ -62,5 +68,9 @@ def load_model_with_adapters(base_model_name, adapter_type, adapter_config, tota
         "trainable_percent": (trainable_params / total_params) * 100
     }
     print(f"Trainable params: {params_info['trainable_params']:,} || All params: {params_info['total_params']:,} || Trainable %: {params_info['trainable_percent']:.4f}")
+    
+    # Verify that we have trainable parameters
+    if trainable_params == 0:
+        raise RuntimeError("No trainable parameters found! Check adapter configuration.")
 
     return model, tokenizer, params_info
