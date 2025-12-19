@@ -100,21 +100,48 @@ The automated analysis generates four key visualizations, providing a comprehens
 
 | Performance vs. Efficiency | Performance Metrics Comparison |
 | :---: | :---: |
-| ![Performance vs Efficiency](plot_1_performance_vs_efficiency.png) | ![Performance Comparison](plot_2_performance_comparison.png) |
+| ![Performance vs Efficiency](plot_1_performance_vs_efficiency.jpg) | ![Performance Comparison](plot_2_performance_comparison.jpg) |
 | **Cost Analysis (Time & Parameters)** | **Model-wise Deep Dive** |
-| ![Computation Cost](plot_3_cost_comparison.png) | ![Model-wise Comparison](plot_4_model_deep_dive.png) |
+| ![Computation Cost](plot_3_cost_comparison.jpg) | ![Model-wise Comparison](plot_4_model_deep_dive.jpg) |
 
 ### Key Findings from the Analysis
 
-Based on the experimental data, we can draw several specific conclusions:
+Based on the comprehensive experimental results from 9 experiments (6 PEFT methods + 3 Full Fine-Tuning baselines), we can draw several critical conclusions:
 
-1. **PEFT is Drastically More Efficient:** PEFT methods (LoRA, IA³, AdaLoRA) achieved comparable or even superior performance to Full Fine-Tuning while training **less than 1%** of the model's total parameters. This represents a monumental reduction in computational cost.
+1. **PEFT is Drastically More Efficient:** PEFT methods (LoRA, IA³, AdaLoRA) achieved competitive performance while training **less than 1%** of the model's total parameters. For example:
+   - **GPT2_IA3**: Only 55,296 trainable parameters (0.067% of total) with Semantic Accuracy of 0.276
+   - **GPT2_LoRA**: 294,912 trainable parameters (0.358% of total) with Semantic Accuracy of 0.273
+   - **GPT2_AdaLoRA**: 442,512 trainable parameters (0.537% of total) with Semantic Accuracy of 0.290
+   
+   This represents a **monumental reduction in computational cost** compared to full fine-tuning.
 
-2. **Full Fine-Tuning Underperforms in Low-Data Regimes:** With only a single training epoch, the Full Fine-Tuning (Full FT) baselines performed poorly, achieving near-zero scores. This strongly suggests that PEFT methods are not only more efficient but also more effective at adapting to a new task quickly with limited data.
+2. **Full Fine-Tuning Shows Strong Performance with Sufficient Training:** Contrary to initial expectations, full fine-tuning achieved the best results when given proper training:
+   - **GPT-Neo-125M_Full_FT**: Achieved the highest Semantic Accuracy of **0.412** (41.2%), significantly outperforming all PEFT methods
+   - **GPT2_Full_FT**: Achieved 0.307 Semantic Accuracy, the best among GPT2 variants
+   - **DistilGPT2_Full_FT**: Achieved 0.301 Semantic Accuracy
+   
+   However, this comes at the cost of training **100% of parameters** (125M parameters for GPT-Neo-125M) and longer training times (70.6 seconds vs 13-26 seconds for PEFT).
 
-3. **`GPT-Neo-125M` with `LoRA` is the Champion:** In this specific test, the `GPT-Neo-125M_LoRA` configuration emerged as the top performer, achieving the highest Semantic Accuracy score (`0.313`). This indicates a strong synergy between the GPT-Neo architecture and the LoRA adapter for this RAG task.
+3. **Best PEFT Performer: GPT2_AdaLoRA:** Among PEFT methods, **GPT2_AdaLoRA** achieved the highest Semantic Accuracy of **0.290**, demonstrating that adaptive rank allocation can improve performance over standard LoRA. It trained only 0.537% of parameters in just 22.5 seconds.
 
-4. **Semantic Accuracy Tells a Different Story:** While traditional metrics like ROUGE and BLEU showed minimal variation, the custom **Semantic Accuracy** metric revealed significant performance differences between methods, highlighting its value in evaluating the true meaning of generated text.
+4. **Training Time Efficiency:** PEFT methods are significantly faster:
+   - **Fastest**: DistilGPT2_LoRA (13.8 seconds)
+   - **Average PEFT**: ~23 seconds
+   - **Full Fine-Tuning**: 38-71 seconds (2-3x slower)
+
+5. **ROUGE-L Performance:** Full fine-tuning also leads in ROUGE metrics:
+   - **GPT-Neo-125M_Full_FT**: ROUGE-L of 0.148 (best overall)
+   - **GPT2_Full_FT**: ROUGE-L of 0.094
+   - **Best PEFT**: GPT2_AdaLoRA with ROUGE-L of 0.058
+
+6. **Semantic Accuracy Reveals True Performance:** The custom **Semantic Accuracy** metric revealed significant performance differences that traditional metrics (ROUGE, BLEU) didn't capture as clearly, highlighting its value in evaluating the true meaning of generated text.
+
+7. **Parameter Efficiency Trade-offs:**
+   - **Most Efficient**: GPT2_IA3 (0.067% trainable, 55K params) - Best parameter efficiency
+   - **Best Balance**: GPT2_AdaLoRA (0.537% trainable, 442K params) - Best PEFT performance
+   - **Best Overall**: GPT-Neo-125M_Full_FT (100% trainable, 125M params) - Best absolute performance
+
+**Conclusion:** For production systems with limited resources, PEFT methods (especially AdaLoRA) offer an excellent balance of performance and efficiency. For maximum performance when resources allow, full fine-tuning of GPT-Neo-125M provides the best results.
 
 ---
 
